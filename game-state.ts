@@ -1,10 +1,15 @@
+import {term} from "./term"; 
+
 export class gameState {
-    player: string;
-    defender: string[];
+    player: term;
+    defender: term[];
 
     constructor(p: string, Q: string[]){
-        this.player = p;
-        this.defender = Q;
+        this.player = new term(p);
+        this.defender = [];
+        for(var sub_term in Q){
+            this.defender.push(new term(sub_term))
+        }
         this.calculatePlayerMoves();
     }
 
@@ -23,38 +28,9 @@ export class gameState {
         Output: List of all possible attacker moves sorted by <a> > ¬ > ^
     */
     calculatePlayerMoves(){
-        var observations: [string];
-        this.divideTerm(this.player);
+        var observations: string[];
+        var divided = this.player.divideTerm()
+        console.log(divided);
     }
-
-    divideTerm(term: string){
-        var depth = 0; //checks if there was an opening ()
-        var cutAtIndex = [];
-        console.log(term)
-        for(var i = 0; i < this.player.length; i++){
-            switch(this.player.charAt(i)){
-                case '(': {
-                    depth += 1;
-                    break;
-                }
-                case ')': {
-                    depth -= 1;
-                    break;
-                }
-                case '+':{
-                    if(depth == 0){
-                        cutAtIndex.push(i)
-                    }
-                    break;
-                }
-                default: {
-                    break;
-                }
-            }
-        };
-        console.log(cutAtIndex);
-    }
-
-
 
 }

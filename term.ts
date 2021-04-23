@@ -15,6 +15,7 @@ export class term {
         Input: CSS player state as a String
         Output: List of all possible attacker moves sorted by <a> > ¬ > ^
     */
+    
     divideTerm(){
         var depth = 0; //checks if there was an opening ()
         var cutAtIndex = [0];
@@ -46,12 +47,12 @@ export class term {
 
         // Cut the term at every + at depth 0 and write it to divided
         for (i = 0; i < cutAtIndex.length-1; i++){
-            divided.push(this.term.substring(cutAtIndex[i],cutAtIndex[i+1]));
+            divided.push(new term(this.term.substring(cutAtIndex[i],cutAtIndex[i+1])));
         }
 
         // Get rid of the '+' at the beginning of each seperated term (except the first one)
         for(i = 1; i < divided.length; i++){
-            divided[i] = divided[i].substring(1,divided[i].length-1);
+            divided[i].term = divided[i].term.substring(1,divided[i].term.length-1);
         }
 
         return divided;

@@ -4,12 +4,10 @@ export class gameState {
     player: term;
     defender: term[];
 
-    constructor(p: string, Q: string[]){
-        this.player = new term(p);
-        this.defender = [];
-        for(var sub_term in Q){
-            this.defender.push(new term(sub_term))
-        }
+    constructor(p: term, Q: term[]){
+        this.player = p;
+        this.defender = Q;
+        
         this.calculatePlayerMoves();
     }
 

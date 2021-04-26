@@ -1,13 +1,15 @@
-import {term} from "./term"; 
+import {term} from "./term";
+import {gameMove} from "./game-move" 
 
 export class gameState {
     player: term;
     defender: term[];
+    //TODO add turn indicator
+    //turn: string;
 
     constructor(p: term, Q: term[]){
         this.player = p;
         this.defender = Q;
-        
         this.calculatePlayerMoves();
     }
 
@@ -22,13 +24,28 @@ export class gameState {
 
     /*  Calculates all possible player moves
         WARNING!: works only on terms with max. 1 ()
-        Input: CSS player state as a String
         Output: List of all possible attacker moves sorted by <a> > ¬ > ^
     */
     calculatePlayerMoves(){
-        var observations: string[];
+        var playerMoves = [];
+    }
+
+    /*
+        Calculates all possible observation moves
+        Output: String list containing all possible observation moves
+    */
+    calculateObservationMoves(){
+        var observations: gameMove[] = [];
+
+        // A list containing divided terms by + outside any ()
         var divided = this.player.divideTerm()
-        console.log(divided);
+        
+        // Collects all posible observation moves
+        for(var sub_term of divided){
+            var possibleObservation = new gameMove(this,sub_term.term.charAt(0),sub_term.term.substring(1,sub_term.term.length));
+            observations.push(possibleObservation)
+        }
+        return observations;
     }
 
 }

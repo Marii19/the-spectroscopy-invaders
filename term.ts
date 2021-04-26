@@ -10,12 +10,10 @@ export class term {
        
     }
 
-    /*  Calculates all possible player moves
-        WARNING!: works only on terms with max. 1 ()
-        Input: CSS player state as a String
-        Output: List of all possible attacker moves sorted by <a> > ¬ > ^
-    */
     
+    /* 
+    - Divides the term into by '+' outside any () 
+    */
     divideTerm(){
         var depth = 0; //checks if there was an opening ()
         var cutAtIndex = [0];
@@ -56,5 +54,42 @@ export class term {
         }
 
         return divided;
+    }
+
+    /**
+     * Calculates all possible moves with given observation and returns target terms
+     * @param observation 
+     * @returns List of resulting terms. Empty list if no observation possible.
+     */
+    calculateMoves(observation: string){
+        var resultingTerms: term[] = [];
+        var dividedTerm = this.divideTerm();
+        for(var sub_term of dividedTerm){
+            if(sub_term.beginsWith(observation)){
+                resultingTerms.push(new term(this.term.substring(1,this.length())));
+            }
+        }
+        return resultingTerms;
+    }
+
+    /**
+     * Checks if the term begins with given observation
+     * @param observation
+     * @returns TRUE if term begins with given observation, FALSE otherweise
+     */
+    beginsWith(observation: string){
+        if(this.term.charAt(0) == observation){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    /**
+     * 
+     * @returns length of the term
+     */
+    length(){
+        return this.term.length;
     }
 }

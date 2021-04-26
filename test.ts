@@ -1,3 +1,4 @@
-var a = [1,2,3];
-var b =[2,3,4];
-console.log(a.concat(b));
+import { term } from "./term";
+
+var a = new term("a.0+b.0")
+console.log(a.divideTerm());

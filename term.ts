@@ -41,7 +41,7 @@ export class term {
                 }
             }
         };
-        cutAtIndex.push(this.term.length-1)
+        cutAtIndex.push(this.term.length)
 
         // Cut the term at every + at depth 0 and write it to divided
         for (i = 0; i < cutAtIndex.length-1; i++){
@@ -50,7 +50,7 @@ export class term {
 
         // Get rid of the '+' at the beginning of each seperated term (except the first one)
         for(i = 1; i < divided.length; i++){
-            divided[i].term = divided[i].term.substring(1,divided[i].term.length-1);
+            divided[i].term = divided[i].term.substring(1,divided[i].term.length);
         }
 
         return divided;
@@ -64,6 +64,8 @@ export class term {
     calculateMoves(observation: string){
         var resultingTerms: term[] = [];
         var dividedTerm = this.divideTerm();
+        console.log("divided term for observation: " + this.term);
+        console.log(dividedTerm)
         for(var sub_term of dividedTerm){
             if(sub_term.beginsWith(observation)){
                 resultingTerms.push(new term(this.term.substring(1,this.length())));

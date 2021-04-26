@@ -42,7 +42,7 @@ export class gameState {
         
         // Collects all posible observation moves
         for(var sub_term of divided){
-            var possibleObservation = new gameMove(this,sub_term.term.charAt(0),sub_term.term.substring(1,sub_term.term.length));
+            var possibleObservation = new gameMove(this,sub_term.term.charAt(0),sub_term.term.substring(2,sub_term.term.length));
             observations.push(possibleObservation)
         }
         return observations;

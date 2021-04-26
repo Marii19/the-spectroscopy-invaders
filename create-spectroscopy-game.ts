@@ -7,6 +7,7 @@ let q_0 = new term("a.(b.0+d.0)+a.(c.0+d.0)")
 // var p_0 = new term("b.0+d.0");
 // var p_1 = new term("c.0+d.0");
 
-let startState = new gameState(p_0, [q_0]);
-var observationMoves = startState.calculateObservationMoves();
-console.log(observationMoves[1].targetState);
+let startState = new gameState(p_0, [q_0], "attacker");
+var moves = startState.calculatePlayerMoves();
+var str = JSON.stringify(moves, null, 4);
+console.log(str);

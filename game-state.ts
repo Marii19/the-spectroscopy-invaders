@@ -4,13 +4,12 @@ import {gameMove} from "./game-move"
 export class gameState {
     player: term;
     defender: term[];
-    //TODO add turn indicator
-    //turn: string;
+    turn: string;
 
-    constructor(p: term, Q: term[]){
+    constructor(p: term, Q: term[], turn: string){
         this.player = p;
         this.defender = Q;
-        this.calculatePlayerMoves();
+        this.turn = turn;
     }
 
     // Function to compare if two gameState objects are equal
@@ -27,7 +26,14 @@ export class gameState {
         Output: List of all possible attacker moves sorted by <a> > ¬ > ^
     */
     calculatePlayerMoves(){
-        var playerMoves = [];
+        var playerMoves = this.calculateObservationMoves();
+
+        // Checks wheather defender holds exactly 1 position
+        if(this.defender.length == 1){
+            playerMoves = playerMoves.concat(this.calculateNegationMove());
+        }
+        playerMoves = playerMoves.concat(this.calculateConjunctionMove());
+        return playerMoves;
     }
 
     /*
@@ -42,10 +48,18 @@ export class gameState {
         
         // Collects all posible observation moves
         for(var sub_term of divided){
-            var possibleObservation = new gameMove(this,sub_term.term.charAt(0),sub_term.term.substring(2,sub_term.term.length));
+            var possibleObservation = new gameMove(this,sub_term.term.charAt(0),sub_term.term.substring(2,sub_term.term.length), "observation");
             observations.push(possibleObservation)
         }
         return observations;
+    }
+
+    calculateNegationMove(){
+        return new gameMove(this, " Neg ", new term(" "), "negation");
+    }
+
+    calculateConjunctionMove(){
+        return new gameMove(this, " ^ ", new term(" "), "conjunction");
     }
 
 }

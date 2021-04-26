@@ -64,11 +64,9 @@ export class term {
     calculateMoves(observation: string){
         var resultingTerms: term[] = [];
         var dividedTerm = this.divideTerm();
-        console.log("divided term for observation: " + this.term);
-        console.log(dividedTerm)
         for(var sub_term of dividedTerm){
             if(sub_term.beginsWith(observation)){
-                resultingTerms.push(new term(this.term.substring(1,this.length())));
+                resultingTerms.push(new term(sub_term.term.substring(2,this.length())));
             }
         }
         return resultingTerms;

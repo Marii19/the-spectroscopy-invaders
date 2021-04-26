@@ -9,8 +9,9 @@ export class gameMove{
 
     constructor(startState: gameState,  move: string, target: term){
         this.startState = startState;
-        this.targetState = this.calculateTargetState(target);
         this.move = move;
+        this.targetState = this.calculateTargetState(target);
+        
     }
 
     /** 

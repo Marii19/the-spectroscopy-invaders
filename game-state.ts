@@ -21,10 +21,10 @@ export class gameState {
         }
     }
 
-    /*  Calculates all possible player moves
-        WARNING!: works only on terms with max. 1 ()
-        Output: List of all possible attacker moves sorted by <a> > ¬ > ^
-    */
+    /**
+     * calculates all possible attacker moves
+     * @returns List[gameMoves] of all possible attacker moves sorted by <a> > neg > ^ 
+     */
     calculatePlayerMoves(){
         var playerMoves = this.calculateObservationMoves();
 
@@ -32,8 +32,17 @@ export class gameState {
         if(this.defender.length == 1){
             playerMoves = playerMoves.concat(this.calculateNegationMove());
         }
-        playerMoves = playerMoves.concat(this.calculateConjunctionMove());
+        playerMoves = playerMoves.concat(this.calculateConjunctionChallengeMove());
         return playerMoves;
+    }
+
+    /**
+     * Calculates all possible defender answers
+     * @returns List[gameMoves] of all possible defender answers 
+     */
+    calculateDefenderMoves(){
+        var defenderMoves = this.calculateConjunctionAnswerMoves();
+        return defenderMoves;
     }
 
     /*
@@ -54,12 +63,32 @@ export class gameState {
         return observations;
     }
 
+    /**
+     * Calculates the negation move  
+     * @returns negation gameMove object
+     */
     calculateNegationMove(){
         return new gameMove(this, " Neg ", new term(" "), "negation");
     }
 
-    calculateConjunctionMove(){
-        return new gameMove(this, " ^ ", new term(" "), "conjunction");
+    /**
+     * Calculates the attacket conjuntion challenge
+     * @returns Conjunction challenge gameMove object
+     */
+    calculateConjunctionChallengeMove(){
+        return new gameMove(this, " ^ ", new term(" "), "conjunction challeng");
+    }
+
+    /**
+     * Calculates the defender conjunction answer
+     * @returns List[gamemoves] conjunction answer moves
+     */
+    calculateConjunctionAnswerMoves(){
+        var conjunctionAnswers: gameMove[] = [];
+        for(var sub_term of this.defender){
+            conjunctionAnswers.push(new gameMove(this, " * ", sub_term, "conjunction answer"));
+        }
+        return conjunctionAnswers;
     }
 
 }

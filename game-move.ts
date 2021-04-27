@@ -21,8 +21,10 @@ export class gameMove{
                 return this.calculateObservationTargetState(target);
             } case "negation": {
                 return this.calculateNegationTargetState();
-            } case "conjunction": {
-                return this.calculateConjunctionTargetState();
+            } case "conjunction challenge": {
+                return this.calculateConjunctionChallengeTargetState();
+            } case "conjunction answer": {
+                return this.calculateConjunctionAnswerTargetState(target);
             }
         }
     }
@@ -40,9 +42,20 @@ export class gameMove{
      * calculates conjunction state by changing the turn indicator
      * @returns Target state.
      */
-    calculateConjunctionTargetState(){
+    calculateConjunctionChallengeTargetState(){
         return new gameState(this.startState.player, this.startState.defender, "defender")
     }
+
+    /**
+     * Calculates conjunction answer target state and changes turn indicator
+     * @param target
+     * @returns Target state.
+     */
+     calculateConjunctionAnswerTargetState(target: term){
+        return new gameState(this.startState.player, [target], "attacker")
+    }
+
+
     /** 
         Calculates the target state
         Input: @param term player position after move as a term

@@ -6,8 +6,12 @@ export class term {
     }
 
     // Function to compare two terms
-    compare(){
-       
+    compare(compareObject){
+       if(this.term == compareObject.term){
+           return true;
+       }else {
+           return false;
+       }
     }
 
     

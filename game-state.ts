@@ -8,6 +8,7 @@ export class gameState {
     turn: string;
     children: gameState[];
     move: string;
+    winningRegion: boolean;
 
     constructor(p: term, Q: term[], turn: string){
         this.player = p;
@@ -195,6 +196,40 @@ export class gameState {
         }else {
             return false;
         }
+    }
+
+    /**
+     * Calculates wheather this state is winning region for attacker 
+     * Updates this.winningRegion 
+     * @returns True if winning region, false else
+     */
+    isWinningRegion(){
+        if(this.isZeroState()){
+            if(this.defender.length == 0){
+                this.winningRegion = true;
+                return true;
+            }else{
+                this.winningRegion = false;
+                return false;
+            }
+        }else{
+            if(this.turn == "attacker"){
+                var isWinning: boolean = false;
+                for(var child of this.children){
+                    isWinning = isWinning || child.isWinningRegion();
+                }
+                this.winningRegion = isWinning;
+                return isWinning;
+            }else{
+                var isWinning: boolean = true;
+                for(var child of this.children){
+                    isWinning = isWinning && child.isWinningRegion();
+                }
+                this.winningRegion = isWinning;
+                return isWinning;
+            }
+        }
+        
     }
 
 }

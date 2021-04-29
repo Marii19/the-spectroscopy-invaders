@@ -8,10 +8,12 @@ let zeroTerm: term = new term("0");
 
 export class spectroscopyGame {
     allStates: gameState[];
+    startState: gameState;
 
     constructor(player: term, defender: term[], turn: string){
         this.allStates = [];
         var startState = new gameState(p_0, [q_0,q_1], "attacker");
+        this.startState = startState;
         this.createSpectroscopyGame(startState,4);
         startState.printAllChildren(0);
     }
@@ -55,6 +57,16 @@ export class spectroscopyGame {
         }
         return temp_moves;
     }
+
+    /**
+     * Check if startState is a winning region
+     * @returns True if winning region, false else
+     */
+    calculateWinningRegions(){
+        return this.startState.isWinningRegion()
+    }
+
+    
 }
 
 /**
@@ -72,4 +84,6 @@ var q_1 = new term("c.0+d.0");
 // *Testing
 // var p_0 = new term("0");
 // var q_0 = new term("0");
-new spectroscopyGame(p_0, [q_0,q_1], "attacker");
+var game = new spectroscopyGame(p_0, [q_0,q_1], "attacker");
+game.calculateWinningRegions();
+console.log(game.startState);

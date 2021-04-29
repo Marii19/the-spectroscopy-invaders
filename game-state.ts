@@ -18,7 +18,12 @@ export class gameState {
         this.move = "";
     }
 
-    // Function to compare if two gameState objects are equal
+    /**
+     * Compares two gameState objects by:
+     * player, defender and turn
+     * @param compareObjekt 
+     * @returns 
+     */
     compare(compareObjekt: gameState){
         if(this.defender.length != compareObjekt.defender.length){
             return false;

@@ -12,9 +12,23 @@ export class hmlFormula{
      * Calculates formula price immediately
      * @param formula 
      */
-    constructor(formula: string ){
-        this.formula = formula;
+    constructor(strategy: string ){
+        this.formula = this.calculateFormula(strategy);
         this.price = new formulaPrice(this.formula);
+    }
+
+    /**
+     * Calculates a HML Formula from Attacker Strategy
+     */
+    calculateFormula(strategy: string){
+        var formula: string = 'T';
+
+        // while(strategy != ''){
+        //     var move = strategy.charAt(strategy.length)
+        //     strategy = strategy.slice(0,-1);
+        //     if(move == '')
+        // }
+        return formula;
     }
 
     

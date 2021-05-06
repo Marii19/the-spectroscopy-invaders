@@ -9,6 +9,7 @@ export class gameState {
     children: gameState[];
     move: string;
     winningRegion: boolean;
+    visitedStates: gameState[];
 
     constructor(p: term, Q: term[], turn: string){
         this.player = p;
@@ -16,6 +17,7 @@ export class gameState {
         this.turn = turn;
         this.children = [];
         this.move = "";
+        this.visitedStates =[];
     }
 
     /**
@@ -46,6 +48,7 @@ export class gameState {
             depth +=1;
             for(var child of this.children){
                 console.log(str, child.player, child.defender, child.turn, child.children.length, child.move);
+                
                 child.printAllChildren(depth);
             }
         }
@@ -81,16 +84,16 @@ export class gameState {
      * @returns List[gameMoves] of all possible attacker moves sorted by <a> > neg > ^
      * TODO remove comment to add childern to this 
      */
-    calculatePlayerMoves(game: spectroscopyGame){
-        var playerMoves = this.calculateObservationMoves(game);
+    calculatePlayerMoves(){
+        var playerMoves = this.calculateObservationMoves();
 
         // Checks wheather defender holds exactly 1 position
         if(this.defender.length == 1 && this.player.term != this.defender[0].term){
-            playerMoves = playerMoves.concat(this.calculateNegationMove(game));
+            playerMoves = playerMoves.concat(this.calculateNegationMove());
         }
         // Checks wheather state is no zero State
         if(!this.isZeroState()){
-            playerMoves = playerMoves.concat(this.calculateConjunctionChallengeMove(game));
+            playerMoves = playerMoves.concat(this.calculateConjunctionChallengeMove());
         }
         return playerMoves;
     }
@@ -101,8 +104,8 @@ export class gameState {
      * @returns List[gameMoves] of all possible defender answers
      * TODO remove comment line to add children to this 
      */
-    calculateDefenderMoves(game){
-        var defenderMoves = this.calculateConjunctionAnswerMoves(game);
+    calculateDefenderMoves(){
+        var defenderMoves = this.calculateConjunctionAnswerMoves();
         return defenderMoves;
     }
 
@@ -112,7 +115,7 @@ export class gameState {
         Calculates all possible observation moves
         Output: String list containing all possible observation moves
     */
-    calculateObservationMoves(game: spectroscopyGame){
+    calculateObservationMoves(){
         var observations: gameMove[] = [];
         // A list containing divided terms by + outside any ()
         var divided = this.player.divideTerm()
@@ -120,9 +123,11 @@ export class gameState {
         for(var sub_term of divided){
             if(sub_term.term != '0'){
                 var possibleObservation = new gameMove(this,sub_term.term.charAt(0),new term(sub_term.term.substring(2,sub_term.term.length)), "observation");
-                if(!this.duplicate(game.allStates, possibleObservation.targetState)){
+                if(!this.duplicate(this.visitedStates, possibleObservation.targetState)){
                     observations.push(possibleObservation)
-                    game.allStates.push(possibleObservation.targetState);
+                    possibleObservation.targetState.visitedStates = this.visitedStates.slice()
+                    possibleObservation.targetState.visitedStates.push(this)
+
                 }
             }
         }
@@ -133,12 +138,13 @@ export class gameState {
      * Calculates the negation move  
      * @returns negation gameMove object
      */
-    calculateNegationMove(game: spectroscopyGame){
+    calculateNegationMove(){
         var negations: gameMove[] = [];
         var negation = new gameMove(this, " Neg ", new term(" "), "negation");
-        if(!this.duplicate(game.allStates, negation.targetState)){
+        if(!this.duplicate(this.visitedStates, negation.targetState)){
             negations.push(negation);
-            game.allStates.push(negation.targetState);
+            negation.targetState.visitedStates = this.visitedStates.slice();
+            negation.targetState.visitedStates.push(this)
         }
         return negations;
     }
@@ -147,12 +153,13 @@ export class gameState {
      * Calculates the attacket conjuntion challenge
      * @returns Conjunction challenge gameMove object
      */
-    calculateConjunctionChallengeMove(game){
+    calculateConjunctionChallengeMove(){
         var conjunctions: gameMove[] = [];
         var conjunction = new gameMove(this, " ^ ", new term(" "), "conjunction challenge");
-        if(!this.duplicate(game.allStates, conjunction.targetState)){
+        if((!this.duplicate(this.visitedStates, conjunction.targetState)) && (this.defender.length !=1)){
             conjunctions.push(conjunction);
-            game.allStates.push(conjunction.targetState);
+            conjunction.targetState.visitedStates = this.visitedStates.slice();
+            conjunction.targetState.visitedStates.push(this)
         }
         return conjunctions;
         
@@ -162,13 +169,14 @@ export class gameState {
      * Calculates the defender conjunction answer
      * @returns List[gamemoves] conjunction answer moves
      */
-    calculateConjunctionAnswerMoves(game){
+    calculateConjunctionAnswerMoves(){
         var conjunctionAnswers: gameMove[] = [];
         for(var sub_term of this.defender){
             var conjunctionAnswer = new gameMove(this, " * ", sub_term, "conjunction answer");
-            if(!this.duplicate(game.allStates, conjunctionAnswer.targetState)){
+            if(!this.duplicate(this.visitedStates, conjunctionAnswer.targetState)){
                 conjunctionAnswers.push(conjunctionAnswer);
-                game.allStates.push(conjunctionAnswer.targetState);
+                conjunctionAnswer.targetState.visitedStates = this.visitedStates.slice();
+                conjunctionAnswer.targetState.visitedStates.push(this)
             }
         }
         return conjunctionAnswers;

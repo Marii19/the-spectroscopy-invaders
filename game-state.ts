@@ -197,12 +197,12 @@ export class gameState {
     }
 
     /**
-     * Checks wheather a state is (0,{0}) or (0,{})
+     * Checks wheather a state is (0,[{0}*]) or (0,{})
      * @returns True if zero state, false else
      */
     isZeroState(){
         var zeroTerm = new term('0');
-        if(this.player.compare(zeroTerm) && (this.defender.length == 1) && this.defender[0].compare(zeroTerm)){
+        if(this.player.compare(zeroTerm) && (this.defender.length > 0)){
             return true;
         }else if(this.player.compare(zeroTerm) && (this.defender.length==0)){
             return true;
@@ -217,6 +217,7 @@ export class gameState {
      * @returns True if winning region, false else
      */
     isWinningRegion(){
+        // Recursion anchor
         if(this.isZeroState()){
             if(this.defender.length == 0){
                 this.winningRegion = true;
@@ -226,6 +227,7 @@ export class gameState {
                 return false;
             }
         }else{
+            // If attackers turn, state is winning region if one of its children is winning region.
             if(this.turn == "attacker"){
                 var isWinning: boolean = false;
                 for(var child of this.children){
@@ -233,6 +235,7 @@ export class gameState {
                 }
                 this.winningRegion = isWinning;
                 return isWinning;
+            // If defenders turn, state is winning region if all of its children are winning regions.
             }else{
                 var isWinning: boolean = true;
                 for(var child of this.children){

@@ -7,6 +7,7 @@ export class gameState {
     defender: term[];
     turn: string;
     children: gameState[];
+    winningChildren: gameState[];
     move: string;
     winningRegion: boolean;
     visitedStates: gameState[];
@@ -16,6 +17,7 @@ export class gameState {
         this.defender = Q;
         this.turn = turn;
         this.children = [];
+        this.winningChildren = [];
         this.move = "";
         this.visitedStates =[];
     }
@@ -40,16 +42,31 @@ export class gameState {
 
     /**
      * Calls itself recursively for all children printing the whole tree
-     * @param depth 
+     * @param depth adds '  '* depth
+     * @param children 
      */
-    printAllChildren(depth: number){
+    printAllChildren( depth: number){
         if(this.children.length != 0){
             var str = this.createString(depth);
             depth +=1;
             for(var child of this.children){
-                console.log(str, child.player, child.defender, child.turn, child.children.length, child.move);
-                
+                console.log(str, child.player, child.defender, child.turn, child.children.length, child.move, "is winning: ",child.winningRegion); 
                 child.printAllChildren(depth);
+            }
+        }
+    }
+
+    /**
+     * Calls itself recursively for all winning children printing the winning graph tree
+     * @param depth adds '  '* depth
+     */
+     printWinningChildren( depth: number){
+        if(this.winningChildren.length != 0){
+            var str = this.createString(depth);
+            depth +=1;
+            for(var child of this.winningChildren){
+                console.log(str, child.player, child.defender, child.turn, child.children.length, child.move, "is winning: ",child.winningRegion); 
+                child.printWinningChildren(depth);
             }
         }
     }
@@ -231,7 +248,8 @@ export class gameState {
             if(this.turn == "attacker"){
                 var isWinning: boolean = false;
                 for(var child of this.children){
-                    isWinning = isWinning || child.isWinningRegion();
+                    child.isWinningRegion();
+                    isWinning = isWinning || child.winningRegion
                 }
                 this.winningRegion = isWinning;
                 return isWinning;
@@ -239,13 +257,26 @@ export class gameState {
             }else{
                 var isWinning: boolean = true;
                 for(var child of this.children){
-                    isWinning = isWinning && child.isWinningRegion();
+                    child.isWinningRegion();
+                    isWinning = isWinning && child.winningRegion
                 }
                 this.winningRegion = isWinning;
                 return isWinning;
             }
         }
         
+    }
+
+    /**
+     * Collects all winning regions
+     */
+    calculateWinningGraph(){
+        for(var child of this.children){
+            if(child.winningRegion){
+                this.winningChildren.push(child);   
+            }
+            child.calculateWinningGraph();
+        }
     }
 
 }

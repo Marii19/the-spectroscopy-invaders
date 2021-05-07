@@ -24,6 +24,6 @@ var q_1 = new term("c.0+d.0");
 // var q_0 = new term("0");
 
 
-var spectroscopy = new spectroscopyProcedure(p_1, [q_0,q_1], 'attacker');
-spectroscopy.calculateWinningRegions();
-spectroscopy.printTree();
+var spectroscopy = new spectroscopyProcedure(p_0, [q_0,q_1], 'attacker');
+spectroscopy.calculateCheapestFormulas();
+spectroscopy.game.startState.printWinningChildren(0);

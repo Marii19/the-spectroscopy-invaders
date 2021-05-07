@@ -13,15 +13,18 @@ export class spectroscopyProcedure {
     }
 
     /**
-     * Calls calculate winning regions for game.
+     * * Spectroscopy procedure algorithm
+     * Calculates the cheapest distinguishing formulas for start state
      */
-    calculateWinningRegions(){
+    calculateCheapestFormulas(){
         this.game.calculateWinningRegions();
+        if(this.game.startState.winningRegion){
+            this.game.startState.calculateWinningGraph();
+        }
     }
 
     /**
      * Prints all states strating from start state
-     * 
      */
     printTree(){
         this.game.startState.printAllChildren(0);

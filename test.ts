@@ -19,6 +19,6 @@ import {formulaPrice} from "./formula-price"
 // allStates.push(test);
 // console.log(allStates.some(elem => elem.compare(test1)));
 
-var hml = "a-a"
+var hml = "a-ad"
 var price = new formulaPrice(hml)
 console.log(price);

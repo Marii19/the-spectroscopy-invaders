@@ -19,6 +19,6 @@ import {formulaPrice} from "./formula-price"
 // allStates.push(test);
 // console.log(allStates.some(elem => elem.compare(test1)));
 
-var hml = "-a-b^{a^{a,a,-a},a^{a,a,-a,b}}"
+var hml = "a-a"
 var price = new formulaPrice(hml)
-console.log(price.positiveFlatBranches);
+console.log(price);

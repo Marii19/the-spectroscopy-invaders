@@ -39,7 +39,6 @@ export class formulaPrice{
                     temp_formula = temp_formula.slice(1,temp_formula.length-1);
                     var sub_formulas = this.divideFormula(temp_formula);
                     var temp_count_max = 0;
-                    console.log(sub_formulas);
                     for(var sub_formula of sub_formulas){
                         var temp_count = this.calculateConjunctions(sub_formula, depth + 1);
                         if(temp_count > temp_count_max){
@@ -113,13 +112,77 @@ export class formulaPrice{
     }
 
     calculateNegations(formula: string){
-
-        return 0;
+        var negations_count: number = 0;
+        var temp_formula = formula.slice();
+        while(temp_formula != ''){
+            var move: string = temp_formula.charAt(0);
+            temp_formula = temp_formula.slice(1,temp_formula.length);
+            switch(move) {
+                case '-': {
+                    negations_count += 1;
+                    break;
+                }
+                case '^': {
+                    temp_formula = temp_formula.slice(1,temp_formula.length-1);
+                    var sub_formulas = this.divideFormula(temp_formula);
+                    var temp_count_max = 0;
+                    for(var sub_formula of sub_formulas){
+                        var temp_count = this.calculateNegations(sub_formula);
+                        if(temp_count > temp_count_max){
+                            temp_count_max = temp_count
+                        }
+                    }
+                    negations_count += temp_count_max;
+                    temp_formula = '';
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        }
+        return negations_count;
     }
 
     calculateNegationsHeight(formula: string){
-
-        return 0;
+        var negations_height_count: number = 0;
+        var start:boolean = false;
+        var temp_formula = formula.slice();
+        
+        while(temp_formula != ''){
+            var move: string = temp_formula.charAt(0);
+            temp_formula = temp_formula.slice(1,temp_formula.length);
+            switch(move) {
+                case '-': {
+                    start = true;
+                    break;
+                }
+                case '.': {
+                    break;
+                }
+                case '^': {
+                    temp_formula = temp_formula.slice(1,temp_formula.length-1);
+                    var sub_formulas = this.divideFormula(temp_formula);
+                    var temp_count_max = 0;
+                    for(var sub_formula of sub_formulas){
+                        var temp_count = this.calculateNegationsHeight(sub_formula);
+                        if(temp_count > temp_count_max){
+                            temp_count_max = temp_count
+                        }
+                    }
+                    negations_height_count += temp_count_max;
+                    temp_formula = '';
+                    break;
+                }
+                default: {
+                    if(start){
+                        negations_height_count += 1;
+                    }
+                    break;
+                }
+            }
+        }
+        return negations_height_count;
     }
 
     /**

@@ -1,6 +1,7 @@
 import {gameState} from "./game-state"; 
 import { term } from "./term";
 import {gameMove} from "./game-move"
+import { NONE } from "phaser";
 
 
 
@@ -10,11 +11,10 @@ export class spectroscopyGame {
     startState: gameState;
 
     constructor(player: term, defender: term[], turn: string){      
-        var startState = new gameState(p_0, [q_0], "attacker");
+        var startState = new gameState(player, defender, "attacker");
         this.startState = startState;
         this.startState.visitedStates.push(startState)
         this.createSpectroscopyGame(startState);
-        startState.printAllChildren(0);
     }
 
     createSpectroscopyGame(startState: gameState){
@@ -63,20 +63,4 @@ export class spectroscopyGame {
     
 }
 
-/**
- * ROOM FOR CCS TERMS
- */
-// *Initial state
-// let p_0 = new term("a.(b.0+c.0)+a.d.0")
-// let q_0 = new term("a.(b.0+d.0)+a.(c.0+d.0)")
 
-// *1-st nested children
-var p_0 = new term("a.b.0");
-var q_0 = new term("a.c.0");
-var q_1 = new term("c.0+d.0");
-
-// *Testing
-// var p_0 = new term("0");
-// var q_0 = new term("0");
-var game = new spectroscopyGame(p_0, [q_0], "attacker");
-game.calculateWinningRegions();

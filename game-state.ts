@@ -1,12 +1,16 @@
 import {term} from "./term";
 import {gameMove} from "./game-move" 
-import {spectroscopyGame} from "./create-spectroscopy-game" 
+import {spectroscopyGame} from "./create-spectroscopy-game"
+import {strat} from './types' 
+import { hmlFormula } from "./hml-formula";
 
 export class gameState {
     player: term;
     defender: term[];
     turn: string;
     children: gameState[];
+    winningChildren: gameState[];
+    parentState: gameState;
     move: string;
     winningRegion: boolean;
     visitedStates: gameState[];
@@ -16,6 +20,7 @@ export class gameState {
         this.defender = Q;
         this.turn = turn;
         this.children = [];
+        this.winningChildren = [];
         this.move = "";
         this.visitedStates =[];
     }
@@ -40,16 +45,31 @@ export class gameState {
 
     /**
      * Calls itself recursively for all children printing the whole tree
-     * @param depth 
+     * @param depth adds '  '* depth
+     * @param children 
      */
-    printAllChildren(depth: number){
+    printAllChildren( depth: number){
         if(this.children.length != 0){
             var str = this.createString(depth);
             depth +=1;
             for(var child of this.children){
-                console.log(str, child.player, child.defender, child.turn, child.children.length, child.move);
-                
+                console.log(str, child.player, child.defender, child.turn, child.children.length, child.move, "is winning: ",child.winningRegion); 
                 child.printAllChildren(depth);
+            }
+        }
+    }
+
+    /**
+     * Calls itself recursively for all winning children printing the winning graph tree
+     * @param depth adds '  '* depth
+     */
+     printWinningChildren( depth: number){
+        if(this.winningChildren.length != 0){
+            var str = this.createString(depth);
+            depth +=1;
+            for(var child of this.winningChildren){
+                console.log(str, child.player, child.defender, child.turn, child.children.length, child.move, "is winning: ",child.winningRegion); 
+                child.printWinningChildren(depth);
             }
         }
     }
@@ -122,7 +142,16 @@ export class gameState {
         // Collects all posible observation moves
         for(var sub_term of divided){
             if(sub_term.term != '0'){
-                var possibleObservation = new gameMove(this,sub_term.term.charAt(0),new term(sub_term.term.substring(2,sub_term.term.length)), "observation");
+                if(sub_term.term.charAt(2)=='('){
+                    console.log(sub_term.term);
+                    var target = new term(sub_term.term.slice(3,-1))
+                    console.log("terget: ",target.term, "as move: ",sub_term.term.charAt(0));
+                    console.log(this.toString());
+                }else{
+                    var target = new term(sub_term.term.substring(2,sub_term.term.length))
+                }
+                var possibleObservation = new gameMove(this,sub_term.term.charAt(0),target, "observation");
+                possibleObservation.targetState.parentState = this;
                 if(!this.duplicate(this.visitedStates, possibleObservation.targetState)){
                     observations.push(possibleObservation)
                     possibleObservation.targetState.visitedStates = this.visitedStates.slice()
@@ -140,7 +169,8 @@ export class gameState {
      */
     calculateNegationMove(){
         var negations: gameMove[] = [];
-        var negation = new gameMove(this, " Neg ", new term(" "), "negation");
+        var negation = new gameMove(this, "-", new term(" "), "negation");
+        negation.targetState.parentState = this;
         if(!this.duplicate(this.visitedStates, negation.targetState)){
             negations.push(negation);
             negation.targetState.visitedStates = this.visitedStates.slice();
@@ -155,7 +185,8 @@ export class gameState {
      */
     calculateConjunctionChallengeMove(){
         var conjunctions: gameMove[] = [];
-        var conjunction = new gameMove(this, " ^ ", new term(" "), "conjunction challenge");
+        var conjunction = new gameMove(this, "^", new term(" "), "conjunction challenge");
+        conjunction.targetState.parentState = this;
         if((!this.duplicate(this.visitedStates, conjunction.targetState)) && (this.defender.length !=1)){
             conjunctions.push(conjunction);
             conjunction.targetState.visitedStates = this.visitedStates.slice();
@@ -172,7 +203,8 @@ export class gameState {
     calculateConjunctionAnswerMoves(){
         var conjunctionAnswers: gameMove[] = [];
         for(var sub_term of this.defender){
-            var conjunctionAnswer = new gameMove(this, " * ", sub_term, "conjunction answer");
+            var conjunctionAnswer = new gameMove(this, "*", sub_term, "conjunction answer");
+            conjunctionAnswer.targetState.parentState = this;
             if(!this.duplicate(this.visitedStates, conjunctionAnswer.targetState)){
                 conjunctionAnswers.push(conjunctionAnswer);
                 conjunctionAnswer.targetState.visitedStates = this.visitedStates.slice();
@@ -197,12 +229,12 @@ export class gameState {
     }
 
     /**
-     * Checks wheather a state is (0,{0}) or (0,{})
+     * Checks wheather a state is (0,[{0}*]) or (0,{})
      * @returns True if zero state, false else
      */
     isZeroState(){
         var zeroTerm = new term('0');
-        if(this.player.compare(zeroTerm) && (this.defender.length == 1) && this.defender[0].compare(zeroTerm)){
+        if(this.player.compare(zeroTerm) && (this.defender.length > 0)){
             return true;
         }else if(this.player.compare(zeroTerm) && (this.defender.length==0)){
             return true;
@@ -217,6 +249,7 @@ export class gameState {
      * @returns True if winning region, false else
      */
     isWinningRegion(){
+        // Recursion anchor
         if(this.isZeroState()){
             if(this.defender.length == 0){
                 this.winningRegion = true;
@@ -226,17 +259,21 @@ export class gameState {
                 return false;
             }
         }else{
+            // If attackers turn, state is winning region if one of its children is winning region.
             if(this.turn == "attacker"){
                 var isWinning: boolean = false;
                 for(var child of this.children){
-                    isWinning = isWinning || child.isWinningRegion();
+                    child.isWinningRegion();
+                    isWinning = isWinning || child.winningRegion
                 }
                 this.winningRegion = isWinning;
                 return isWinning;
+            // If defenders turn, state is winning region if all of its children are winning regions.
             }else{
                 var isWinning: boolean = true;
                 for(var child of this.children){
-                    isWinning = isWinning && child.isWinningRegion();
+                    child.isWinningRegion();
+                    isWinning = isWinning && child.winningRegion
                 }
                 this.winningRegion = isWinning;
                 return isWinning;
@@ -244,5 +281,71 @@ export class gameState {
         }
         
     }
+
+    /**
+     * Collects all winning regions
+     */
+    calculateWinningGraph(){
+        for(var child of this.children){
+            if(child.winningRegion){
+                this.winningChildren.push(child);   
+            }
+            child.calculateWinningGraph();
+        }
+    }
+
+    /**
+     * Converts a state into string like "player: ..., defender: ..., turn: ..."
+     * @returns 
+     */
+    toString(){
+        var str: string = '';
+        str = str + "player: " + this.player.term + ", defender: ";
+        for(var sub_term of this.defender){
+            str = str + sub_term.term + ", "
+        }
+        str = str.slice(0,-2)
+        str = str + ", turn: " + this.turn;
+
+        return str;
+    }
+
+
+    calculateStrats(strats){
+        var strat: hmlFormula[] = [];
+        var conjunction = '';
+        for(var child of this.winningChildren){
+            var move = child.move;
+            switch(move){
+                case '*':{
+                    if(this.winningRegion){
+                        conjunction = conjunction + strats.get(child)[0].formula + ','
+                        
+                    }
+                    break;
+                }
+                case '^':{
+                    var sub_strat = new hmlFormula('^{'+strats.get(child)[0].formula+'}');
+                    strat.push(sub_strat);
+                    break;
+                }
+                default:{
+                    for(var _strat of strats.get(child)){
+                        var sub_strat = new hmlFormula(move + _strat.formula);
+                        strat.push(sub_strat);
+                    }
+                }
+            }
+        }
+        if(this.winningChildren.length == 0){
+            var sub_strat = new hmlFormula('');
+            strat.push(sub_strat);
+        }
+        if(conjunction != ''){
+            strat.push(new hmlFormula(conjunction.slice(0,-1)));
+        }
+        return strat;
+    }
+
 
 }

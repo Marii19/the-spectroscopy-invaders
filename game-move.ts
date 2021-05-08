@@ -72,6 +72,9 @@ export class gameMove{
     calculateObservationDefenderPositions(){
         var defenderPositions: term[] = [];
         for (var defenderPosition of this.startState.defender){
+            if(defenderPosition.term.charAt(0)=='('){
+                defenderPosition.term = defenderPosition.term.slice(1,-1);
+            }
             defenderPositions = defenderPositions.concat(defenderPosition.calculateMoves(this.move));
         }
         return defenderPositions;

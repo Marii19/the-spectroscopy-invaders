@@ -90,10 +90,14 @@ export class term {
     }
 
     /**
-     * 
+     * Calculate length of a term
      * @returns length of the term
      */
     length(){
         return this.term.length;
     }
+
+    
+
+
 }

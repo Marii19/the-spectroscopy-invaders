@@ -251,4 +251,8 @@ export class formulaPrice{
         dividedFormula.push(formula.slice(last_sliced, formula.length))
         return dividedFormula;
     }
+
+    asArray(){
+        return [this.conjunctions, this.positiveDeepBranches, this.positiveFlatBranches, this.negations, this.negationsHeight];
+    }
 }

@@ -1,6 +1,8 @@
 import {term} from "./term";
 import {gameMove} from "./game-move" 
-import {spectroscopyGame} from "./create-spectroscopy-game" 
+import {spectroscopyGame} from "./create-spectroscopy-game"
+import {strat} from './types' 
+import { hmlFormula } from "./hml-formula";
 
 export class gameState {
     player: term;
@@ -8,6 +10,7 @@ export class gameState {
     turn: string;
     children: gameState[];
     winningChildren: gameState[];
+    parentState: gameState;
     move: string;
     winningRegion: boolean;
     visitedStates: gameState[];
@@ -139,7 +142,16 @@ export class gameState {
         // Collects all posible observation moves
         for(var sub_term of divided){
             if(sub_term.term != '0'){
-                var possibleObservation = new gameMove(this,sub_term.term.charAt(0),new term(sub_term.term.substring(2,sub_term.term.length)), "observation");
+                if(sub_term.term.charAt(2)=='('){
+                    console.log(sub_term.term);
+                    var target = new term(sub_term.term.slice(3,-1))
+                    console.log("terget: ",target.term, "as move: ",sub_term.term.charAt(0));
+                    console.log(this.toString());
+                }else{
+                    var target = new term(sub_term.term.substring(2,sub_term.term.length))
+                }
+                var possibleObservation = new gameMove(this,sub_term.term.charAt(0),target, "observation");
+                possibleObservation.targetState.parentState = this;
                 if(!this.duplicate(this.visitedStates, possibleObservation.targetState)){
                     observations.push(possibleObservation)
                     possibleObservation.targetState.visitedStates = this.visitedStates.slice()
@@ -157,7 +169,8 @@ export class gameState {
      */
     calculateNegationMove(){
         var negations: gameMove[] = [];
-        var negation = new gameMove(this, " Neg ", new term(" "), "negation");
+        var negation = new gameMove(this, "-", new term(" "), "negation");
+        negation.targetState.parentState = this;
         if(!this.duplicate(this.visitedStates, negation.targetState)){
             negations.push(negation);
             negation.targetState.visitedStates = this.visitedStates.slice();
@@ -172,7 +185,8 @@ export class gameState {
      */
     calculateConjunctionChallengeMove(){
         var conjunctions: gameMove[] = [];
-        var conjunction = new gameMove(this, " ^ ", new term(" "), "conjunction challenge");
+        var conjunction = new gameMove(this, "^", new term(" "), "conjunction challenge");
+        conjunction.targetState.parentState = this;
         if((!this.duplicate(this.visitedStates, conjunction.targetState)) && (this.defender.length !=1)){
             conjunctions.push(conjunction);
             conjunction.targetState.visitedStates = this.visitedStates.slice();
@@ -189,7 +203,8 @@ export class gameState {
     calculateConjunctionAnswerMoves(){
         var conjunctionAnswers: gameMove[] = [];
         for(var sub_term of this.defender){
-            var conjunctionAnswer = new gameMove(this, " * ", sub_term, "conjunction answer");
+            var conjunctionAnswer = new gameMove(this, "*", sub_term, "conjunction answer");
+            conjunctionAnswer.targetState.parentState = this;
             if(!this.duplicate(this.visitedStates, conjunctionAnswer.targetState)){
                 conjunctionAnswers.push(conjunctionAnswer);
                 conjunctionAnswer.targetState.visitedStates = this.visitedStates.slice();
@@ -278,5 +293,59 @@ export class gameState {
             child.calculateWinningGraph();
         }
     }
+
+    /**
+     * Converts a state into string like "player: ..., defender: ..., turn: ..."
+     * @returns 
+     */
+    toString(){
+        var str: string = '';
+        str = str + "player: " + this.player.term + ", defender: ";
+        for(var sub_term of this.defender){
+            str = str + sub_term.term + ", "
+        }
+        str = str.slice(0,-2)
+        str = str + ", turn: " + this.turn;
+
+        return str;
+    }
+
+
+    calculateStrats(strats){
+        var strat: hmlFormula[] = [];
+        var conjunction = '';
+        for(var child of this.winningChildren){
+            var move = child.move;
+            switch(move){
+                case '*':{
+                    if(this.winningRegion){
+                        conjunction = conjunction + strats.get(child)[0].formula + ','
+                        
+                    }
+                    break;
+                }
+                case '^':{
+                    var sub_strat = new hmlFormula('^{'+strats.get(child)[0].formula+'}');
+                    strat.push(sub_strat);
+                    break;
+                }
+                default:{
+                    for(var _strat of strats.get(child)){
+                        var sub_strat = new hmlFormula(move + _strat.formula);
+                        strat.push(sub_strat);
+                    }
+                }
+            }
+        }
+        if(this.winningChildren.length == 0){
+            var sub_strat = new hmlFormula('');
+            strat.push(sub_strat);
+        }
+        if(conjunction != ''){
+            strat.push(new hmlFormula(conjunction.slice(0,-1)));
+        }
+        return strat;
+    }
+
 
 }

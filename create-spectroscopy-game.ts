@@ -1,6 +1,7 @@
 import {gameState} from "./game-state"; 
 import { term } from "./term";
 import {gameMove} from "./game-move"
+import { NONE } from "phaser";
 
 
 

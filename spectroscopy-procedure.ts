@@ -22,43 +22,42 @@ export class spectroscopyProcedure {
         this.game.startState.calculateWinningGraph();
         
         if(this.game.startState.winningRegion){
-            console.log("is winning Region.")
+            console.log("game is won")
             var todo = [this.game.startState];
             var strats = new Map();
             while(todo.length != 0 ){
                 var g = todo[0];
-                console.log()
-                console.log("lista Todo: ")
-                todo.forEach(elem =>  console.log( "    ",elem.toString() + "  ; "));
-                console.log("g to jest: " + g.toString())
+               // console.log("lista Todo: ")
+               //console.log("g to jest: " + g.toString())
                 var sg = strats.get(g)
                 if(!sg){
                     strats.set(g,[])
-                    console.log("strats = 0");
+                    //console.log("strats = 0");
                 }
                 var gg_ = [];
                 for(var child of g.winningChildren){
                     if(!strats.get(child)){
                         gg_.push(child)
                     }
-                    console.log("calculate winning regions")
+                    //console.log("calculate winning regions")
                 }
                 if(gg_.length == 0){
                     todo.shift();
-                    console.log("nie ma nowych dzieci");
+                    //console.log("nie ma nowych dzieci");
                     var sg_ = this.nonDominated(g.calculateStrats(strats));
                     strats.set(g,sg_)
                 }
                 else{
-                    console.log("wkładam dzieci : ")
+                    //console.log("wkładam dzieci : ")
                     todo = gg_.concat(todo);
                     for(var gihi of gg_){
-                        console.log(gihi.toString())
+                        //console.log(gihi.toString())
                     }
                 }
             }
             return strats.get(this.game.startState);
         }else {
+            console.log("game is lost")
             return [];
         }
     }
@@ -83,7 +82,7 @@ export class spectroscopyProcedure {
             for(var i =0; i< formulas.length; i++){
                 if(i != formulas.indexOf(formula)){
                     if(formulas[i].dominates(formula)==1){
-                        dominated.push(formula);
+                        formulas.splice(formulas.indexOf(formula),1);
                     }
                 }
             }
@@ -91,9 +90,9 @@ export class spectroscopyProcedure {
 
 
         // Delete all formulas of dominated from formula
-        for(var domFormula of dominated){
-            formulas.splice(formulas.indexOf(domFormula),1);
-        } 
+        // for(var domFormula of dominated){
+        //     formulas.splice(formulas.indexOf(domFormula),1);
+        // } 
         return formulas;
     }
 }

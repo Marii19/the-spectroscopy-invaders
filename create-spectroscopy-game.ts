@@ -15,6 +15,8 @@ export class spectroscopyGame {
         this.startState = startState;
         this.startState.visitedStates.push(startState)
         this.createSpectroscopyGame(startState);
+        this.calculateWinningRegions();
+        this.startState.calculateWinningGraph();
     }
 
     createSpectroscopyGame(startState: gameState){

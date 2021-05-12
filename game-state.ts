@@ -143,10 +143,7 @@ export class gameState {
         for(var sub_term of divided){
             if(sub_term.term != '0'){
                 if(sub_term.term.charAt(2)=='('){
-                    console.log(sub_term.term);
                     var target = new term(sub_term.term.slice(3,-1))
-                    console.log("terget: ",target.term, "as move: ",sub_term.term.charAt(0));
-                    console.log(this.toString());
                 }else{
                     var target = new term(sub_term.term.substring(2,sub_term.term.length))
                 }
@@ -234,7 +231,7 @@ export class gameState {
      */
     isZeroState(){
         var zeroTerm = new term('0');
-        if(this.player.compare(zeroTerm) && (this.defender.length > 0)){
+        if(this.player.compare(zeroTerm) && (this.defender.length ==1) && (this.defender[0].term == '0')){
             return true;
         }else if(this.player.compare(zeroTerm) && (this.defender.length==0)){
             return true;
@@ -320,7 +317,6 @@ export class gameState {
                 case '*':{
                     if(this.winningRegion){
                         conjunction = conjunction + strats.get(child)[0].formula + ','
-                        
                     }
                     break;
                 }

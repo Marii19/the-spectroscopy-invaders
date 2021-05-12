@@ -1,8 +1,7 @@
-import {term} from "./term";
+import {term} from "../formulas/term";
 import {gameMove} from "./game-move" 
-import {spectroscopyGame} from "./create-spectroscopy-game"
-import {strat} from './types' 
-import { hmlFormula } from "./hml-formula";
+import {spectroscopyGame} from "../spectroscopy/create-spectroscopy-game"
+import { hmlFormula } from "../formulas/hml-formula";
 
 export class gameState {
     player: term;

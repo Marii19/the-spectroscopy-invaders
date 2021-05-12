@@ -1,11 +1,7 @@
-import {gameState} from "./game-state"; 
-import { term } from "./term";
-import {gameMove} from "./game-move"
+import {gameState} from "../game_objects/game-state"; 
+import { term } from "../formulas/term";
+import {gameMove} from "../game_objects/game-move"
 import { NONE } from "phaser";
-
-
-
-let zeroTerm: term = new term("0");
 
 export class spectroscopyGame {
     startState: gameState;
@@ -15,11 +11,14 @@ export class spectroscopyGame {
         this.startState = startState;
         this.startState.visitedStates.push(startState)
         this.createSpectroscopyGame(startState);
+
+        // Calculates winning regions and winning graph
         this.calculateWinningRegions();
         this.startState.calculateWinningGraph();
     }
 
     createSpectroscopyGame(startState: gameState){
+        console.log("hallo")
         var moves: gameMove[] = [];
         var moves_queue: gameMove[] = [];
         // Calculate moves for either attacker or defender  
@@ -41,18 +40,18 @@ export class spectroscopyGame {
     }
 
 
-    removeDuplicates(moves: gameMove[], visitedStates: gameState[]){
-        var temp_moves = moves;
-        for(var move of moves){
-            if(visitedStates.some(elem => elem.compare(move.targetState))){
-                // DO NOT REMOVE  (0,{0}) or (0,{}) states
-                if(!move.targetState.isZeroState()){
-                    temp_moves.splice(temp_moves.indexOf(move), 1);
-                }
-            }
-        }
-        return temp_moves;
-    }
+    
+    // removeDuplicates(moves: gameMove[], visitedStates: gameState[]){
+    //     var temp_moves = moves;
+    //     for(var move of moves){
+    //         if(visitedStates.some(elem => elem.compare(move.targetState))){
+    //             if(!move.targetState.isZeroState()){
+    //                 temp_moves.splice(temp_moves.indexOf(move), 1);
+    //             }
+    //         }
+    //     }
+    //     return temp_moves;
+    // }
 
     /**
      * Check if startState is a winning region

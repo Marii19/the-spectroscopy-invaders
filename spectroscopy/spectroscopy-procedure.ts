@@ -1,8 +1,8 @@
-import {gameState} from "./game-state"; 
-import { term } from "./term";
-import {gameMove} from "./game-move"
+import {gameState} from "../game_objects/game-state"; 
+import { term } from "../formulas/term";
+import {gameMove} from "../game_objects/game-move"
 import { spectroscopyGame } from "./create-spectroscopy-game";
-import { hmlFormula } from "./hml-formula";
+import { hmlFormula } from "../formulas/hml-formula";
 
 
 export class spectroscopyProcedure {
@@ -17,9 +17,6 @@ export class spectroscopyProcedure {
      * Calculates the cheapest distinguishing formulas for start state
      */
     calculateCheapestFormulas(){
-        
-        this.game.calculateWinningRegions();
-        this.game.startState.calculateWinningGraph();
         
         if(this.game.startState.winningRegion){
             console.log("game is won")
@@ -75,9 +72,7 @@ export class spectroscopyProcedure {
      * @param state 
      */
     nonDominated(formulas: hmlFormula[]){
-        var dominated: hmlFormula[] = [];
-
-        // Check what formulas are being dominated and stores them in dominated[]
+        // Check what formulas are being dominated and deletes them
         for(var formula of formulas){
             for(var i =0; i< formulas.length; i++){
                 if(i != formulas.indexOf(formula)){
@@ -87,12 +82,6 @@ export class spectroscopyProcedure {
                 }
             }
         }
-
-
-        // Delete all formulas of dominated from formula
-        // for(var domFormula of dominated){
-        //     formulas.splice(formulas.indexOf(domFormula),1);
-        // } 
         return formulas;
     }
 }

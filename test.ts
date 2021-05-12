@@ -1,10 +1,9 @@
-import { gameState } from "./game-state";
-import { term } from "./term";
-import {gameMove} from "./game-move"
-import {formulaPrice} from "./formula-price"
-import {hmlFormula} from './hml-formula'
-import {spectroscopyGame} from "./create-spectroscopy-game"
-import { spectroscopyProcedure } from "./spectroscopy-procedure";
+import {gameState} from "./game_objects/game-state"; 
+import { term } from "./formulas/term";
+import {gameMove} from "./game_objects/game-move"
+import { spectroscopyGame } from "./spectroscopy/create-spectroscopy-game";
+import { spectroscopyProcedure } from "./spectroscopy/spectroscopy-procedure";
+import {hmlFormula} from "./formulas/hml-formula"
 
 var p = new term("b.0");
 var q = new term("a.0");

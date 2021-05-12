@@ -1,6 +1,6 @@
 import { NONE } from "phaser";
 import { gameState } from "./game-state";
-import {term} from "./term";
+import {term} from "../formulas/term";
 
 export class gameMove{
     startState: gameState;

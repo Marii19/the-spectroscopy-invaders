@@ -1,9 +1,9 @@
-import {gameState} from "./game-state"; 
-import { term } from "./term";
-import {gameMove} from "./game-move"
-import { spectroscopyGame } from "./create-spectroscopy-game";
-import { spectroscopyProcedure } from "./spectroscopy-procedure";
-import {hmlFormula} from "./hml-formula"
+import {gameState} from "./game_objects/game-state"; 
+import { term } from "./formulas/term";
+import {gameMove} from "./game_objects/game-move"
+import { spectroscopyGame } from "./spectroscopy/create-spectroscopy-game";
+import { spectroscopyProcedure } from "./spectroscopy/spectroscopy-procedure";
+import {hmlFormula} from "./formulas/hml-formula"
 
 
 

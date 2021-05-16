@@ -45,11 +45,12 @@ var strats = new Map();
 
 // var strat = game.startState.calculateStrats(strats);
 
-var form1 = new hmlFormula('a^{c,b}');
+var form1 = new hmlFormula('a-b'); //failure - equ
 console.log(form1.price.asArray());
-var form2 = new hmlFormula('a^{-b,-c}');
-console.log(form2.price.asArray());
+var form2 = new hmlFormula('a^{c,-b,d}'); // trace
 
-// var spec = new spectroscopyProcedure(q,[p],"attacker");
-// console.log(spec.nonDominated([form1, form2]));
+ console.log(form2.price.asArray());
+
+ // var spec = new spectroscopyProcedure(q,[p],"attacker");
+ console.log(form1.dominates(form2));
 

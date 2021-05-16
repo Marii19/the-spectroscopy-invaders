@@ -44,7 +44,7 @@ export class hmlFormula{
         var same = 0;
 
         
-        for(var i = 0; i<=5; i++){
+        for(var i = 0; i<5; i++){
             if(this_array[i]<=compare_array[i]){
                 dominates +=1;
             }
@@ -52,7 +52,7 @@ export class hmlFormula{
                 dominated +=1;
             }
             if(this_array[i]==compare_array[i]){
-                dominated +=1;
+                same +=1;
             }
         }
 

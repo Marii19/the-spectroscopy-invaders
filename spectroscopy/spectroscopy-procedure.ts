@@ -7,9 +7,11 @@ import { hmlFormula } from "../formulas/hml-formula";
 
 export class spectroscopyProcedure {
     game: spectroscopyGame;
+    strats;
 
-    constructor(player: term, defender: term[], turn: string){
-        this.game = new spectroscopyGame(player, defender, turn);
+    constructor(player: term, defender: term[], turn: string, calculateRegions: boolean){
+        this.game = new spectroscopyGame(player, defender, turn, calculateRegions);
+        this.strats = new Map();
     }
 
     /**
@@ -21,19 +23,18 @@ export class spectroscopyProcedure {
         if(this.game.startState.winningRegion){
             console.log("game is won")
             var todo = [this.game.startState];
-            var strats = new Map();
             while(todo.length != 0 ){
                 var g = todo[0];
                // console.log("lista Todo: ")
                //console.log("g to jest: " + g.toString())
-                var sg = strats.get(g)
+                var sg = this.strats.get(g)
                 if(!sg){
-                    strats.set(g,[])
+                    this.strats.set(g,[])
                     //console.log("strats = 0");
                 }
                 var gg_ = [];
                 for(var child of g.winningChildren){
-                    if(!strats.get(child)){
+                    if(!this.strats.get(child)){
                         gg_.push(child)
                     }
                     //console.log("calculate winning regions")
@@ -41,8 +42,8 @@ export class spectroscopyProcedure {
                 if(gg_.length == 0){
                     todo.shift();
                     //console.log("nie ma nowych dzieci");
-                    var sg_ = this.nonDominated(g.calculateStrats(strats));
-                    strats.set(g,sg_)
+                    var sg_ = this.nonDominated(g.calculateStrats(this.strats));
+                    this.strats.set(g,sg_)
                 }
                 else{
                     //console.log("wkładam dzieci : ")
@@ -52,7 +53,7 @@ export class spectroscopyProcedure {
                     }
                 }
             }
-            return strats.get(this.game.startState);
+            return this.strats.get(this.game.startState);
         }else {
             console.log("game is lost")
             return [];

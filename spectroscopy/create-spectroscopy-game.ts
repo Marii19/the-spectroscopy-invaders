@@ -6,19 +6,20 @@ import { NONE } from "phaser";
 export class spectroscopyGame {
     startState: gameState;
 
-    constructor(player: term, defender: term[], turn: string){      
+    constructor(player: term, defender: term[], turn: string, calculateRegions: boolean){      
         var startState = new gameState(player, defender, "attacker");
         this.startState = startState;
         this.startState.visitedStates.push(startState)
-        this.createSpectroscopyGame(startState);
+        if(calculateRegions){
+            this.createSpectroscopyGame(startState);
 
-        // Calculates winning regions and winning graph
-        this.calculateWinningRegions();
-        this.startState.calculateWinningGraph();
+            // Calculates winning regions and winning graph
+            this.calculateWinningRegions();
+            this.startState.calculateWinningGraph();
+        }
     }
 
     createSpectroscopyGame(startState: gameState){
-        console.log("hallo")
         var moves: gameMove[] = [];
         var moves_queue: gameMove[] = [];
         // Calculate moves for either attacker or defender  
@@ -40,18 +41,6 @@ export class spectroscopyGame {
     }
 
 
-    
-    // removeDuplicates(moves: gameMove[], visitedStates: gameState[]){
-    //     var temp_moves = moves;
-    //     for(var move of moves){
-    //         if(visitedStates.some(elem => elem.compare(move.targetState))){
-    //             if(!move.targetState.isZeroState()){
-    //                 temp_moves.splice(temp_moves.indexOf(move), 1);
-    //             }
-    //         }
-    //     }
-    //     return temp_moves;
-    // }
 
     /**
      * Check if startState is a winning region

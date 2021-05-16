@@ -50,6 +50,10 @@ export class formulaPrice{
                     break;
                 }
                 default: {
+                    depth +=1
+                    if((temp_formula.length > 1) && (temp_formula.charAt(0)=='-')){
+                        conjunctionCount +=1;
+                    }
                     break;
                 }
             }
@@ -154,6 +158,9 @@ export class formulaPrice{
             temp_formula = temp_formula.slice(1,temp_formula.length);
             switch(move) {
                 case '-': {
+                    if(start==true){
+                        negations_height_count +=1;
+                    }
                     start = true;
                     break;
                 }

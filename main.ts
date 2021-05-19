@@ -18,32 +18,31 @@ let q = new term("a.(b.0+d.0)+a.(c.0+d.0)")
 // *1-st nested children
 
 let p_0 = new term("b.0+c.0");
-let d_0 = new term("b.0+d.0");
-let d_1 = new term("c.0+d.0");
+let q_0 = new term("b.0+d.0");
+let q_1 = new term("c.0+d.0");
 
 // let p_0 = new term("d.0");
 // let d_0 = new term("b.0+d.0");
 // let d_1 = new term("c.0+d.0");
 
-// *Testing
-// let p_0 = new term("a.b.0");
-// let q_0 = new term("a.c.0");
+
 
 console.log("starting...")
 let spectroscopy = new spectroscopyProcedure(p, [q], 'attacker', true);
 // spectroscopy.game.startState.printAllChildren(0)
+
 let strats: hmlFormula[] = spectroscopy.calculateCheapestFormulas();
 
 for(let strat of strats){
-    console.log(strat.formula)
+    console.log("result: ", strat.formula)
 }
 
-let player = new attacker(spectroscopy.game, p, [q], "attacker");
-player.addAttackerMove('a', "b.0+c.0");
-player.addAttackerMove("^", 'b.0+c.0');
-player.addDefenderMove();
-player.addAttackerMove("-", 'c.0+d.0');
-player.addAttackerMove("d", '0');
-//player.playerStartState.printWinningChildren(0);
-player.movesToFormel();
+// let player = new attacker(spectroscopy.game, p, [q], "attacker");
+// player.addAttackerMove('a', "b.0+c.0");
+// player.addAttackerMove("^", 'b.0+c.0');
+// player.addDefenderMove();
+// player.addAttackerMove("-", 'b.0+d.0');
+// player.addAttackerMove("d", '0');
+// //player.playerStartState.printWinningChildren(0);
+// player.movesToFormel();
 

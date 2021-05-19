@@ -36,17 +36,15 @@ export class attacker {
         }
     }
 
+    /**
+     * Computes the defender move
+     */
     addDefenderMove(){
-        let i = 0;
+        let defenderMove = this.chooseDefenderMove();
+
+        // Iterate over all children and add all non defenderMove to winningChildren
         for(let state of this.actualState.children){
-            if(i == this.actualState.children.length -1){
-                let playerState = new gameState(state.player, state.defender, state.turn);
-                playerState.winningRegion = true;
-                playerState.move = state.move;
-                this.actualPlayerState.winningChildren.push(playerState);
-                this.actualPlayerState = playerState;
-                this.actualState = state; 
-            }else{
+            if(state == defenderMove){
                 let playerState = new gameState(state.player, state.defender, state.turn);
                 playerState.winningRegion = true;
                 playerState.move = state.move;
@@ -54,9 +52,22 @@ export class attacker {
                 playerState.winningChildren = state.winningChildren;
                 this.actualPlayerState.winningChildren.push(playerState);
             }
-            i +=1;
         }
+        // Add defenderMove to winningCHildren and overwrite actualState with defenderMove
+        let playerState = new gameState(defenderMove.player, defenderMove.defender, defenderMove.turn);
+        playerState.winningRegion = true;
+        playerState.move = defenderMove.move;
+        this.actualPlayerState.winningChildren.push(playerState);
+        this.actualPlayerState = playerState;
+        this.actualState = defenderMove; 
+    }
 
+    /**
+     * Implements strategy for choosing next defender move
+     * TODO implement strategy ( first move for now )
+     */
+    chooseDefenderMove(){
+        return this.actualState.children[0];
     }
 
     movesToFormel(){

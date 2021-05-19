@@ -42,8 +42,13 @@ export class spectroscopyProcedure {
                 if(gg_.length == 0){
                     todo.shift();
                     //console.log("nie ma nowych dzieci");
-                    let sg_ = this.nonDominated(g.calculateStrats(this.strats));
-                    this.strats.set(g,sg_)
+                    if((g.move == "*") || (g.move == "^")){
+                        let sg_ = g.calculateStrats(this.strats);
+                        this.strats.set(g,sg_)
+                    }else {
+                        let sg_ = this.nonDominated(g.calculateStrats(this.strats));
+                        this.strats.set(g,sg_)
+                    }
                 }
                 else{
                     //console.log("wkładam dzieci : ")
@@ -72,17 +77,27 @@ export class spectroscopyProcedure {
      * @param strats 
      * @param state 
      */
-    nonDominated(formulas: hmlFormula[]){
+     nonDominated(formulas: hmlFormula[]){
         // Check what formulas are being dominated and deletes them
+    
+        let dominatedIndex: number[] = [];
+    
+        // Checks for formulas that are being dominated by any other formula in formulas and adds its Index
         for(let formula of formulas){
             for(let i =0; i< formulas.length; i++){
-                if(i != formulas.indexOf(formula)){
-                    if(formulas[i].dominates(formula)==1){
-                        formulas.splice(formulas.indexOf(formula),1);
-                    }
-                }
+                if(formulas[i].dominates(formula)==1){
+                    dominatedIndex.push(formulas.indexOf(formula))
+                }   
             }
         }
-        return formulas;
+    
+        // Deletes all dominate formulas
+        let nonDominatedFormulas: hmlFormula[] = [];
+        for(let formula of formulas){
+            if(!(dominatedIndex.includes(formulas.indexOf(formula)))){
+                nonDominatedFormulas.push(formula);
+            }
+        }
+        return nonDominatedFormulas;
     }
 }

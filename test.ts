@@ -45,9 +45,9 @@ var strats = new Map();
 
 // var strat = game.startState.calculateStrats(strats);
 
-var form1 = new hmlFormula('a-b'); //failure - equ
+var form1 = new hmlFormula('a^{-b^{a}, b^{b}}'); //failure - equ
 console.log(form1.price.asArray());
-var form2 = new hmlFormula('a^{c,-b,d}'); // trace
+var form2 = new hmlFormula('a^{c,-b}'); // trace
 
  console.log(form2.price.asArray());
 

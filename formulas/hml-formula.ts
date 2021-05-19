@@ -21,10 +21,10 @@ export class hmlFormula{
      * Calculates a HML Formula from Attacker Strategy
      */
     calculateFormula(strategy: string){
-        var formula: string = 'T';
+        let formula: string = 'T';
 
         // while(strategy != ''){
-        //     var move = strategy.charAt(strategy.length)
+        //     let move = strategy.charAt(strategy.length)
         //     strategy = strategy.slice(0,-1);
         //     if(move == '')
         // }
@@ -37,14 +37,14 @@ export class hmlFormula{
      * @returns 1 if dominates, -1 if no, 0 no relation
      */
     dominates(compareObj: hmlFormula){
-        var this_array = this.price.asArray();
-        var compare_array = compareObj.price.asArray();
-        var dominates = 0;
-        var dominated = 0;
-        var same = 0;
+        let this_array = this.price.asArray();
+        let compare_array = compareObj.price.asArray();
+        let dominates = 0;
+        let dominated = 0;
+        let same = 0;
 
         
-        for(var i = 0; i<5; i++){
+        for(let i = 0; i<5; i++){
             if(this_array[i]<=compare_array[i]){
                 dominates +=1;
             }

@@ -62,7 +62,7 @@ export class gameMove{
         Output: Whole game State with all defender positions
     */
     calculateObservationTargetState(target: term){
-        var defenderPositions = this.calculateObservationDefenderPositions();
+        let defenderPositions = this.calculateObservationDefenderPositions();
         return new gameState(target, defenderPositions, "attacker");
     }
     
@@ -70,8 +70,8 @@ export class gameMove{
      * Calculates the defender position after move
      */
     calculateObservationDefenderPositions(){
-        var defenderPositions: term[] = [];
-        for (var defenderPosition of this.startState.defender){
+        let defenderPositions: term[] = [];
+        for (let defenderPosition of this.startState.defender){
             if(defenderPosition.term.charAt(0)=='('){
                 defenderPosition.term = defenderPosition.term.slice(1,-1);
             }

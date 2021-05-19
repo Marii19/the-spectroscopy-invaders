@@ -19,12 +19,12 @@ export class term {
     - Divides the term into by '+' outside any () 
     */
     divideTerm(){
-        var depth = 0; //checks if there was an opening ()
-        var cutAtIndex = [0];
-        var divided = []
+        let depth = 0; //checks if there was an opening ()
+        let cutAtIndex = [0];
+        let divided = []
 
         // Find the indicies of every + outside of any () in the term
-        for(var i = 0; i < this.term.length; i++){
+        for(let i = 0; i < this.term.length; i++){
             switch(this.term.charAt(i)){
                 case '(': {
                     depth += 1;
@@ -48,12 +48,12 @@ export class term {
         cutAtIndex.push(this.term.length)
 
         // Cut the term at every + at depth 0 and write it to divided
-        for (i = 0; i < cutAtIndex.length-1; i++){
+        for (let i = 0; i < cutAtIndex.length-1; i++){
             divided.push(new term(this.term.substring(cutAtIndex[i],cutAtIndex[i+1])));
         }
 
         // Get rid of the '+' at the beginning of each seperated term (except the first one)
-        for(i = 1; i < divided.length; i++){
+        for(let i = 1; i < divided.length; i++){
             divided[i].term = divided[i].term.substring(1,divided[i].term.length);
         }
 
@@ -66,9 +66,9 @@ export class term {
      * @returns List of resulting terms. Empty list if no observation possible.
      */
     calculateMoves(observation: string){
-        var resultingTerms: term[] = [];
-        var dividedTerm = this.divideTerm();
-        for(var sub_term of dividedTerm){
+        let resultingTerms: term[] = [];
+        let dividedTerm = this.divideTerm();
+        for(let sub_term of dividedTerm){
             if(sub_term.beginsWith(observation)){
                 resultingTerms.push(new term(sub_term.term.substring(2,this.length())));
             }

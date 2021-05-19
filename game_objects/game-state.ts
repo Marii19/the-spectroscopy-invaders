@@ -49,9 +49,9 @@ export class gameState {
      */
     printAllChildren( depth: number){
         if(this.children.length != 0){
-            var str = this.createString(depth);
+            let str = this.createString(depth);
             depth +=1;
-            for(var child of this.children){
+            for(let child of this.children){
                 console.log(str, child.player, child.defender, child.turn, child.children.length, child.move, "is winning: ",child.winningRegion); 
                 child.printAllChildren(depth);
             }
@@ -64,9 +64,9 @@ export class gameState {
      */
      printWinningChildren( depth: number){
         if(this.winningChildren.length != 0){
-            var str = this.createString(depth);
+            let str = this.createString(depth);
             depth +=1;
-            for(var child of this.winningChildren){
+            for(let child of this.winningChildren){
                 console.log(str, child.player, child.defender, child.turn, child.children.length, child.move, "is winning: ",child.winningRegion); 
                 child.printWinningChildren(depth);
             }
@@ -79,8 +79,8 @@ export class gameState {
      * @param moves 
      */
      getChildrenFromMoves(moves: gameMove[]){
-        var children = [];
-        for(var move of moves){
+        let children = [];
+        for(let move of moves){
             move.targetState.move = move.move;
             children.push(move.targetState)
         }
@@ -104,7 +104,7 @@ export class gameState {
      * TODO remove comment to add childern to this 
      */
     calculatePlayerMoves(){
-        var playerMoves = this.calculateObservationMoves();
+        let playerMoves = this.calculateObservationMoves();
 
         // Checks wheather defender holds exactly 1 position
         if(this.defender.length == 1 && this.player.term != this.defender[0].term){
@@ -124,7 +124,7 @@ export class gameState {
      * TODO remove comment line to add children to this 
      */
     calculateDefenderMoves(){
-        var defenderMoves = this.calculateConjunctionAnswerMoves();
+        let defenderMoves = this.calculateConjunctionAnswerMoves();
         return defenderMoves;
     }
 
@@ -135,18 +135,19 @@ export class gameState {
         Output: String list containing all possible observation moves
     */
     calculateObservationMoves(){
-        var observations: gameMove[] = [];
+        let observations: gameMove[] = [];
         // A list containing divided terms by + outside any ()
-        var divided = this.player.divideTerm()
+        let divided = this.player.divideTerm()
         // Collects all posible observation moves
-        for(var sub_term of divided){
+        for(let sub_term of divided){
             if(sub_term.term != '0'){
+                let target;
                 if(sub_term.term.charAt(2)=='('){
-                    var target = new term(sub_term.term.slice(3,-1))
+                    target = new term(sub_term.term.slice(3,-1))
                 }else{
-                    var target = new term(sub_term.term.substring(2,sub_term.term.length))
+                    target = new term(sub_term.term.substring(2,sub_term.term.length))
                 }
-                var possibleObservation = new gameMove(this,sub_term.term.charAt(0),target, "observation");
+                let possibleObservation = new gameMove(this,sub_term.term.charAt(0),target, "observation");
                 possibleObservation.targetState.parentState = this;
                 if(!this.duplicate(this.visitedStates, possibleObservation.targetState)){
                     observations.push(possibleObservation)
@@ -164,8 +165,8 @@ export class gameState {
      * @returns negation gameMove object
      */
     calculateNegationMove(){
-        var negations: gameMove[] = [];
-        var negation = new gameMove(this, "-", new term(" "), "negation");
+        let negations: gameMove[] = [];
+        let negation = new gameMove(this, "-", new term(" "), "negation");
         negation.targetState.parentState = this;
         if(!this.duplicate(this.visitedStates, negation.targetState)){
             negations.push(negation);
@@ -180,8 +181,8 @@ export class gameState {
      * @returns Conjunction challenge gameMove object
      */
     calculateConjunctionChallengeMove(){
-        var conjunctions: gameMove[] = [];
-        var conjunction = new gameMove(this, "^", new term(" "), "conjunction challenge");
+        let conjunctions: gameMove[] = [];
+        let conjunction = new gameMove(this, "^", new term(" "), "conjunction challenge");
         conjunction.targetState.parentState = this;
         if((!this.duplicate(this.visitedStates, conjunction.targetState)) && (this.defender.length !=1)){
             conjunctions.push(conjunction);
@@ -197,9 +198,9 @@ export class gameState {
      * @returns List[gamemoves] conjunction answer moves
      */
     calculateConjunctionAnswerMoves(){
-        var conjunctionAnswers: gameMove[] = [];
-        for(var sub_term of this.defender){
-            var conjunctionAnswer = new gameMove(this, "*", sub_term, "conjunction answer");
+        let conjunctionAnswers: gameMove[] = [];
+        for(let sub_term of this.defender){
+            let conjunctionAnswer = new gameMove(this, "*", sub_term, "conjunction answer");
             conjunctionAnswer.targetState.parentState = this;
             if(!this.duplicate(this.visitedStates, conjunctionAnswer.targetState)){
                 conjunctionAnswers.push(conjunctionAnswer);
@@ -216,9 +217,9 @@ export class gameState {
      * @returns String
      */
     createString(depth){
-        var str: string = "";
-        for(var i = 0; i < depth; i++){
-            var temp_str = "    "
+        let str: string = "";
+        for(let i = 0; i < depth; i++){
+            let temp_str = "    "
             str = str.concat(temp_str);
         }
         return str;
@@ -229,7 +230,7 @@ export class gameState {
      * @returns True if zero state, false else
      */
     isZeroState(){
-        var zeroTerm = new term('0');
+        let zeroTerm = new term('0');
         if(this.player.compare(zeroTerm) && (this.defender.length ==1) && (this.defender[0].term == '0')){
             return true;
         }else if(this.player.compare(zeroTerm) && (this.defender.length==0)){
@@ -257,8 +258,8 @@ export class gameState {
         }else{
             // If attackers turn, state is winning region if one of its children is winning region.
             if(this.turn == "attacker"){
-                var isWinning: boolean = false;
-                for(var child of this.children){
+                let isWinning: boolean = false;
+                for(let child of this.children){
                     child.isWinningRegion();
                     isWinning = isWinning || child.winningRegion
                 }
@@ -266,8 +267,8 @@ export class gameState {
                 return isWinning;
             // If defenders turn, state is winning region if all of its children are winning regions.
             }else{
-                var isWinning: boolean = true;
-                for(var child of this.children){
+                let isWinning: boolean = true;
+                for(let child of this.children){
                     child.isWinningRegion();
                     isWinning = isWinning && child.winningRegion
                 }
@@ -282,7 +283,7 @@ export class gameState {
      * Collects all winning regions
      */
     calculateWinningGraph(){
-        for(var child of this.children){
+        for(let child of this.children){
             if(child.winningRegion){
                 this.winningChildren.push(child);   
             }
@@ -295,9 +296,9 @@ export class gameState {
      * @returns 
      */
     toString(){
-        var str: string = '';
+        let str: string = '';
         str = str + "player: " + this.player.term + ", defender: ";
-        for(var sub_term of this.defender){
+        for(let sub_term of this.defender){
             str = str + sub_term.term + ", "
         }
         str = str.slice(0,-2)
@@ -308,10 +309,10 @@ export class gameState {
 
 
     calculateStrats(strats){
-        var strat: hmlFormula[] = [];
-        var conjunction = '';
-        for(var child of this.winningChildren){
-            var move = child.move;
+        let strat: hmlFormula[] = [];
+        let conjunction = '';
+        for(let child of this.winningChildren){
+            let move = child.move;
             switch(move){
                 case '*':{
                     if(this.winningRegion){
@@ -320,20 +321,20 @@ export class gameState {
                     break;
                 }
                 case '^':{
-                    var sub_strat = new hmlFormula('^{'+strats.get(child)[0].formula+'}');
+                    let sub_strat = new hmlFormula('^{'+strats.get(child)[0].formula+'}');
                     strat.push(sub_strat);
                     break;
                 }
                 default:{
-                    for(var _strat of strats.get(child)){
-                        var sub_strat = new hmlFormula(move + _strat.formula);
+                    for(let _strat of strats.get(child)){
+                        let sub_strat = new hmlFormula(move + _strat.formula);
                         strat.push(sub_strat);
                     }
                 }
             }
         }
         if(this.winningChildren.length == 0){
-            var sub_strat = new hmlFormula('');
+            let sub_strat = new hmlFormula('');
             strat.push(sub_strat);
         }
         if(conjunction != ''){

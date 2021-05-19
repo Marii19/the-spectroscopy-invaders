@@ -23,10 +23,10 @@ export class attacker {
     }
 
     addAttackerMove(move: string,  target: string){
-        for(var state of this.actualState.children){
+        for(let state of this.actualState.children){
             // Finds a corresponding move in game and adds winningChild to actualState
             if((state.move) == move && (state.player.term == target)){
-                var playerState = new gameState(state.player, state.defender, state.turn);
+                let playerState = new gameState(state.player, state.defender, state.turn);
                 playerState.winningRegion = true;
                 playerState.move = move;
                 this.actualPlayerState.winningChildren.push(playerState);
@@ -37,17 +37,17 @@ export class attacker {
     }
 
     addDefenderMove(){
-        var i = 0;
-        for(var state of this.actualState.children){
+        let i = 0;
+        for(let state of this.actualState.children){
             if(i == this.actualState.children.length -1){
-                var playerState = new gameState(state.player, state.defender, state.turn);
+                let playerState = new gameState(state.player, state.defender, state.turn);
                 playerState.winningRegion = true;
                 playerState.move = state.move;
                 this.actualPlayerState.winningChildren.push(playerState);
                 this.actualPlayerState = playerState;
                 this.actualState = state; 
             }else{
-                var playerState = new gameState(state.player, state.defender, state.turn);
+                let playerState = new gameState(state.player, state.defender, state.turn);
                 playerState.winningRegion = true;
                 playerState.move = state.move;
                 playerState.children = state.children
@@ -62,8 +62,8 @@ export class attacker {
     movesToFormel(){
         this.playerStartState.winningRegion = true;
         this.spectroscopy.game.startState = this.playerStartState;
-        var strats = this.spectroscopy.calculateCheapestFormulas();
-        for(var strat of strats){
+        let strats = this.spectroscopy.calculateCheapestFormulas();
+        for(let strat of strats){
             console.log(strat.formula)
         }
     }

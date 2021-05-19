@@ -17,28 +17,28 @@ let q = new term("a.(b.0+d.0)+a.(c.0+d.0)")
 
 // *1-st nested children
 
-var p_0 = new term("b.0+c.0");
-var d_0 = new term("b.0+d.0");
-var d_1 = new term("c.0+d.0");
+let p_0 = new term("b.0+c.0");
+let d_0 = new term("b.0+d.0");
+let d_1 = new term("c.0+d.0");
 
-// var p_0 = new term("d.0");
-// var d_0 = new term("b.0+d.0");
-// var d_1 = new term("c.0+d.0");
+// let p_0 = new term("d.0");
+// let d_0 = new term("b.0+d.0");
+// let d_1 = new term("c.0+d.0");
 
 // *Testing
-// var p_0 = new term("a.b.0");
-// var q_0 = new term("a.c.0");
+// let p_0 = new term("a.b.0");
+// let q_0 = new term("a.c.0");
 
 console.log("starting...")
-var spectroscopy = new spectroscopyProcedure(p, [q], 'attacker', true);
+let spectroscopy = new spectroscopyProcedure(p, [q], 'attacker', true);
 // spectroscopy.game.startState.printAllChildren(0)
-var strats: hmlFormula[] = spectroscopy.calculateCheapestFormulas();
+let strats: hmlFormula[] = spectroscopy.calculateCheapestFormulas();
 
-for(var strat of strats){
+for(let strat of strats){
     console.log(strat.formula)
 }
 
-var player = new attacker(spectroscopy.game, p, [q], "attacker");
+let player = new attacker(spectroscopy.game, p, [q], "attacker");
 player.addAttackerMove('a', "b.0+c.0");
 player.addAttackerMove("^", 'b.0+c.0');
 player.addDefenderMove();

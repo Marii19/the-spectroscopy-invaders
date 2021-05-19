@@ -7,7 +7,7 @@ export class spectroscopyGame {
     startState: gameState;
 
     constructor(player: term, defender: term[], turn: string, calculateRegions: boolean){      
-        var startState = new gameState(player, defender, "attacker");
+        let startState = new gameState(player, defender, "attacker");
         this.startState = startState;
         this.startState.visitedStates.push(startState)
         if(calculateRegions){
@@ -20,8 +20,8 @@ export class spectroscopyGame {
     }
 
     createSpectroscopyGame(startState: gameState){
-        var moves: gameMove[] = [];
-        var moves_queue: gameMove[] = [];
+        let moves: gameMove[] = [];
+        let moves_queue: gameMove[] = [];
         // Calculate moves for either attacker or defender  
         if(startState.turn == "attacker"){
             moves = startState.calculatePlayerMoves();
@@ -33,8 +33,8 @@ export class spectroscopyGame {
         moves_queue = moves;
         // Pop one move from the queue and calculate its next moves
         while(moves_queue.length != 0){
-            var move = moves_queue.shift();
-            var new_moves = this.createSpectroscopyGame(move.targetState)
+            let move = moves_queue.shift();
+            let new_moves = this.createSpectroscopyGame(move.targetState)
             moves = moves.concat(new_moves);
         }
         return moves;

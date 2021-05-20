@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-      "lib": ["es2017", "es6", "dom", "scripthost"],
+      "lib": ["es2019", "es6", "dom", "scripthost"],
       "target": "es5",
       "module": "commonjs",
       "sourceMap": false

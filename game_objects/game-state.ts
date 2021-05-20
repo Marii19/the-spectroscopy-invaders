@@ -310,23 +310,29 @@ export class gameState {
 
     calculateStrats(strats){
         let strat: hmlFormula[] = [];
-        let conjunction = '';
         for(let child of this.winningChildren){
             let move = child.move;
             switch(move){
                 case '*':{
-                    if(this.winningRegion){
-                        conjunction = conjunction + strats.get(child)[0].formula + ','
-                    }
                     break;
                 }
                 case '^':{
-                    let sub_strat = new hmlFormula('^{'+strats.get(child)[0].formula+'}');
-                    strat.push(sub_strat);
+                    let sub_strats = this.getPermutations(child.winningChildren[0], strats, child.winningChildren, '');
+                    for(let sub_strat of sub_strats){
+                        sub_strat = this.deleteDuplicates(sub_strat);
+                        if(!(sub_strat.includes(","))){
+                            let new_strat = new hmlFormula(sub_strat);
+                            strat.push(new_strat);
+                        }else{
+                            let new_strat = new hmlFormula('^{'+sub_strat+'}');
+                            strat.push(new_strat);
+                        }  
+                    }
                     break;
                 }
                 default:{
                     for(let _strat of strats.get(child)){
+                        //console.log("dziecko strat: ", _strat)
                         let sub_strat = new hmlFormula(move + _strat.formula);
                         strat.push(sub_strat);
                     }
@@ -337,10 +343,41 @@ export class gameState {
             let sub_strat = new hmlFormula('');
             strat.push(sub_strat);
         }
-        if(conjunction != ''){
-            strat.push(new hmlFormula(conjunction.slice(0,-1)));
-        }
         return strat;
+    }
+
+    getPermutations(state: gameState, strats, next: gameState[], formel: string){
+        let perm: string[] = []
+        next.shift();
+        for(let strat of strats.get(state)){
+            if(next.length == 0){
+                perm.push(formel + "," + strat.formula );
+            }else{
+                let temp_perm = this.getPermutations(next[0], strats, next.slice(), strat.formula)
+                for(let elem of temp_perm){
+                    if(formel == ''){
+                        perm.push(elem);
+                    }else{
+                        perm.push(formel + "," + elem);
+                    }
+                }
+            }
+        }
+        return perm;
+    }
+
+    /**
+     * Deletes all duplicats in ^{  }
+     */
+    deleteDuplicates(strat: string){
+        let seperated = strat.split(",");
+        let unique: string[] =[]; 
+        for(let elem of seperated){
+            if(!(unique.includes(elem))){
+                unique.push(elem);
+            }
+        }
+        return unique.toString();
     }
 
 

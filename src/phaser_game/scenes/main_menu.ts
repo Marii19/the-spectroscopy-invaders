@@ -301,7 +301,7 @@ export default class mainMenu extends Phaser.Scene{
         this.add.image(420, 580, 'star_empty');
         this.stars_positions.set("bisimulation two", [380, 580]);
         this.level_won.set("bisimulation two", false);
-        this.previous_level.set("bisimulation two", "busimulation one");
+        this.previous_level.set("bisimulation two", "bisimulation one");
 
         let bisimulation_three = this.add.image(550, 540, 'enter_bisimulation').setInteractive().setName("bisimulation three");
         this.levels.push(bisimulation_three);
@@ -312,7 +312,7 @@ export default class mainMenu extends Phaser.Scene{
         this.add.image(570, 580, 'star_empty');
         this.stars_positions.set("bisimulation three", [530, 580]);
         this.level_won.set("bisimulation three", false);
-        this.previous_level.set("bisimulation three", "busimulation two");
+        this.previous_level.set("bisimulation three", "bisimulation two");
 
         let bisimulation_four = this.add.image(700, 540, 'enter_bisimulation').setInteractive().setName("bisimulation four");
         this.levels.push(bisimulation_four);
@@ -323,7 +323,7 @@ export default class mainMenu extends Phaser.Scene{
         this.add.image(720, 580, 'star_empty');
         this.stars_positions.set("bisimulation four", [680, 580]);
         this.level_won.set("bisimulation four", false);
-        this.previous_level.set("bisimulation four", "busimulation three");
+        this.previous_level.set("bisimulation four", "bisimulation three");
 
         // Add credits button
         let credits_button: Phaser.GameObjects.Image = this.add.image(760, 50, 'info').setInteractive().setName("credits");
